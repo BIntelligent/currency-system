@@ -116,7 +116,7 @@ class CurrencySystem {
         const wallet = data.wallet;
         if (!money) return "Specify an amount to deposite";
         if (money.includes('-')) return "You can't deposite negative money";
-        if (amount > wallet) return "You don't have that much money in wallet.";
+        if (amount < wallet) return "You don't have that much money in wallet.";
 
         if (money == 'all') {
 
