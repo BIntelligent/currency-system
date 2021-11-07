@@ -121,6 +121,7 @@ class CurrencySystem {
         };
         let item = {
             name: String(settings.inventory.name) || 'Air',
+            description: String(settings.inventory.description) || 'Air,
             price: parseInt(settings.inventory.price) || 0,
         }
         inventoryData.inventory.push(item);
