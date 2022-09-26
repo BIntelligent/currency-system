@@ -189,40 +189,42 @@ class CurrencySystem {
     // If user want remove all items
     if (settings.amount == "all") {
       // Find index of item
-      let i = data.inventory.findIndex(i => i === data.inventory.filter(inv => inv.name === thing)) + 1;
+      let i =
+        data.inventory.findIndex(
+          (i) => i === data.inventory.filter((inv) => inv.name === thing)
+        ) + 1;
 
       let data_to_save = {
         count: 0,
         name: data.inventory[i].name,
-        deleted: data.inventory[i].amount
-      }
+        deleted: data.inventory[i].amount,
+      };
       data_user = data_to_save;
 
       data.inventory.splice(i, 1);
       done = true;
-
     } else {
       for (let i in data.inventory) {
         if (data.inventory[i] === data.inventory[thing]) {
-          // If in inventory the number of item is greater to 1 and no amount specified 
+          // If in inventory the number of item is greater to 1 and no amount specified
           if (data.inventory[i].amount > 1 && !settings?.amount) {
             data.inventory[i].amount--;
 
             let data_to_save = {
               count: data.inventory[i].amount,
               name: data.inventory[i].name,
-              deleted: 1
-            }
+              deleted: 1,
+            };
 
-            data_user = data_to_save; 
+            data_user = data_to_save;
             done = true;
             // If in inventory the number of item is equal to 1 and no amount specified
           } else if (data.inventory[i].amount === 1 && !settings?.amount) {
             let data_to_save = {
               count: 0,
               name: data.inventory[i].name,
-              deleted: 1
-            }
+              deleted: 1,
+            };
 
             data_user = data_to_save;
 
@@ -232,24 +234,26 @@ class CurrencySystem {
           } else if (settings?.amount !== "all") {
             // If number specified is greater to number item in inventory
             if (settings.amount > data.inventory[i].amount) {
-            done = false;
-            data_error.type = "invalid-amount";
-          } else if (String(settings.amount).includes("-")) {
-            done = false;
-            data_error.type = "negative-amount"
+              done = false;
+              data_error.type = "Invalid-Amount";
+            } else if (String(settings.amount).includes("-")) {
+              done = false;
+              data_error.type = "Negative-Amount";
+            } else if (parseInt(settings.amount) === 0) {
+              done = false;
+              data_error.type = "Invalid-Amount";
+            } else {
+              data.inventory[i].amount -= settings.amount;
 
-          } else {
-            data.inventory[i].amount -= settings.amount;
+              let data_to_save = {
+                count: data.inventory[i].amount,
+                name: data.inventory[i].name,
+                deleted: settings.amount,
+              };
 
-            let data_to_save = {
-              count: data.inventory[i].amount,
-              name: data.inventory[i].name,
-              deleted: settings.amount
-            };
-  
-            data_user = data_to_save;
-            done = true;
-          }
+              data_user = data_to_save;
+              done = true;
+            }
           }
         }
       }
