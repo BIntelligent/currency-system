@@ -2,7 +2,7 @@
 This will go through all functions with example's
 See https://github.com/BIntelligent/currency-system/tree/main/v14-ExampleBot for a Example bot.
 # NEW!
-Nothing!
++  Added `transferItems()`. 
 # Bug reports
 Join our [Support Server](https://discord.gg/stERZwjA9m): 
 Package Made by: `Be Intelligent#1715`.
@@ -11,7 +11,7 @@ Package Made by: `Be Intelligent#1715`.
 # For Global Economy
 To make it global, remove following line from every command 
 ```js
-guild: message.guild,
+guild: interaction.guild,
 ```
 and add 
 ```js

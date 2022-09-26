@@ -1,15 +1,15 @@
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem;
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, interaction, args) => {
 
     let result = await cs.hafly({
-        user: message.user,
-        guild: message.guild,
+        user: interaction.user,
+        guild: interaction.guild,
         amount: 100,
 
     });
-    if (result.error) return message.reply(`You have used hafly recently Try again in ${result.time}`);
-    else return message.reply(`You have earned $${result.amount}. Your streak is now ${result.rawData.streak.hafly}`);
+    if (result.error) return interaction.reply(`You have used hafly recently Try again in ${result.time}`);
+    else return interaction.reply(`You have earned $${result.amount}. Your streak is now ${result.rawData.streak.hafly}`);
 }
 
 module.exports.help = {

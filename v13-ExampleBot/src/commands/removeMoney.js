@@ -1,8 +1,8 @@
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem;
-module.exports.run = async (client, message, args) => {
-    let user = args[2].member || message.member;
-    if (!message.member.permissions.has('ADMINISTRATOR')) return message.reply("You do not have requied permissions.")
+module.exports.run = async (client, interaction, args) => {
+    let user = args[2].member || interaction.member;
+    if (!interaction.member.permissions.has('ADMINISTRATOR')) return interaction.reply("You do not have requied permissions.")
     let wheretoPutMoney = args.get('where_to_put_money');
     if (wheretoPutMoney) wheretoPutMoney = 'bank';
     else wheretoPutMoney = 'wallet';
@@ -10,12 +10,12 @@ module.exports.run = async (client, message, args) => {
     let money = parseInt(amount);
     let result = await cs.removeMoney({
         user: user,
-        guild: message.guild,
+        guild: interaction.guild,
         amount: money,
         wheretoPutMoney: wheretoPutMoney
     });
-    if (result.error) return message.reply("You cant remove negitive money");
-    else message.reply(`Successfully removed $${money} to ${user.user.username}, ( from ${wheretoPutMoney} )`)
+    if (result.error) return interaction.reply("You cant remove negitive money");
+    else interaction.reply(`Successfully removed $${money} to ${user.user.username}, ( from ${wheretoPutMoney} )`)
 }
 
 module.exports.help = {

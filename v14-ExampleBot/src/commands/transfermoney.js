@@ -1,23 +1,23 @@
     const CurrencySystem = require("currency-system");
     const cs = new CurrencySystem;
-    module.exports.run = async (client, message, args) => {
-        let user = message.options.getUser('user');
-        if (user.id === message.user.id) return message.channel.send(`You can't transfer money to yourself!`);
+    module.exports.run = async (client, interaction, args) => {
+        let user = interaction.options.getUser('user');
+        if (user.id === interaction.user.id) return interaction.channel.send(`You can't transfer money to yourself!`);
 
-        let amount = message.options.getInteger('amount');
+        let amount = interaction.options.getInteger('amount');
 
-        if (!amount) return message.reply("Enter amount of money to add.");
-        if (String(amount).includes("-")) return message.reply("You can't send negitive money.")
+        if (!amount) return interaction.reply("Enter amount of money to add.");
+        if (String(amount).includes("-")) return interaction.reply("You can't send negitive money.")
         let money = parseInt(amount);
 
         let result = await cs.transferMoney({
-            user: message.user,
+            user: interaction.user,
             user2: user,
-            guild: message.guild,
+            guild: interaction.guild,
             amount: money
         });
-        if (result.error) return message.reply(`You don't have enough money in your wallet.`);
-        else message.reply(`**${message.user.username}**, Successfully transfered **${result.money}** to **${result.user2.username}**`)
+        if (result.error) return interaction.reply(`You don't have enough money in your wallet.`);
+        else interaction.reply(`**${interaction.user.username}**, Successfully transfered **${result.money}** to **${result.user2.username}**`)
 
     }
 

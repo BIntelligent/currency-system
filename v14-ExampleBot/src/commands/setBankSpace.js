@@ -1,13 +1,13 @@
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem;
-module.exports.run = async (client, message, args) => {
-    const user = message.options.getUser('user') || message.user;
+module.exports.run = async (client, interaction, args) => {
+    const user = interaction.options.getUser('user') || interaction.user;
 
-    let result = await cs.setBankSpace(user.id, message.guild.id, message.options.getInteger('amount') || 0);
+    let result = await cs.setBankSpace(user.id, interaction.guild.id, interaction.options.getInteger('amount') || 0);
     if (result.error) {
-        if (result.type === 'no-amount-provided') return message.reply('Please provide number to setBank Limit to.');
-        else return message.reply('Something went wrong., maybe same amount provided');
-    } else return message.reply(`Successfully set Bank Limit of ${user.tag} to ${result.amount}`)
+        if (result.type === 'no-amount-provided') return interaction.reply('Please provide number to setBank Limit to.');
+        else return interaction.reply('Something went wrong., maybe same amount provided');
+    } else return interaction.reply(`Successfully set Bank Limit of ${user.tag} to ${result.amount}`)
 
 }
 

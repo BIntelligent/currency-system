@@ -1,21 +1,21 @@
 const Discord = require('discord.js')
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem;
-module.exports.run = async (client, message, args) => {
-    const user = message.options.getUser('user') || message.user;
+module.exports.run = async (client, interaction, args) => {
+    const user = interaction.options.getUser('user') || interaction.user;
     let result = await cs.getUserItems({
         user: user,
-        guild: message.guild,
+        guild: interaction.guild,
     });
     let inv = result.inventory.slice(0, 10)
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.interactionEmbed()
         .setDescription('Your Inventory in Empty!')
     for (key of inv) {
         embed.addField(`**${key.name}:**`, `Amount: ${key.amount}`);
         embed.setDescription('Your Inventory!')
 
     }
-    return message.reply({
+    return interaction.reply({
         embeds: [embed]
     })
 }

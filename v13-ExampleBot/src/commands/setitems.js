@@ -1,10 +1,10 @@
 const Discord = require('discord.js')
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem;
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, interaction, args) => {
 
     cs.setItems({
-        guild: message.guild,
+        guild: interaction.guild,
         shop: [{
             name: 'Watch',
             price: 20
@@ -13,7 +13,7 @@ module.exports.run = async (client, message, args) => {
             price: 1230
         }]
     });
-    return message.reply('Success!!')
+    return interaction.reply('Success!!')
 
 }
 

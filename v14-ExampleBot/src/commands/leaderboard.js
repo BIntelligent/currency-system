@@ -2,9 +2,9 @@ const CurrencySystem = require("currency-system");
 const Discord = require("discord.js");
 const cs = new CurrencySystem();
 
-module.exports.run = async (client, message, args) => {
-  let data = await cs.leaderboard(message.guild.id);
-  if (data.length < 1) return message.reply("Nobody's in leaderboard yet.");
+module.exports.run = async (client, interaction, args) => {
+  let data = await cs.leaderboard(interaction.guild.id);
+  if (data.length < 1) return interaction.reply("Nobody's in leaderboard yet.");
   const msg = new Discord.EmbedBuilder();
   let pos = 0;
   // This is to get First 10 Users )
@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args) => {
     });
   });
   msg.addFields(arr);
-  message
+  interaction
     .reply({
       embeds: [msg],
     })

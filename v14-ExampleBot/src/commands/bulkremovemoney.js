@@ -1,20 +1,20 @@
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem;
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, interaction, args) => {
     let wheretoPutMoney = args.get('where_to_put_money');
     if (wheretoPutMoney) wheretoPutMoney = 'bank';
     else wheretoPutMoney = 'wallet';
     let amount = args.get('amount')
     let money = parseInt(amount);
     let result = await cs.removeMoneyFromAllUsers({
-        guild: message.guild.id,
+        guild: interaction.guild.id,
         amount: money,
         wheretoPutMoney: wheretoPutMoney
     });
     if (result.error) {
-        if (result.type === 'negative-money') return message.reply("You cant remove negitive money");
-        else return message.reply('No User\'s found');
-    } else message.reply(`Successfully removed $${money} from ${result.rawData.length} people!, ( in ${wheretoPutMoney} )`)
+        if (result.type === 'negative-money') return interaction.reply("You cant remove negitive money");
+        else return interaction.reply('No User\'s found');
+    } else interaction.reply(`Successfully removed $${money} from ${result.rawData.length} people!, ( in ${wheretoPutMoney} )`)
 }
 
 module.exports.help = {

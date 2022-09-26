@@ -1,11 +1,11 @@
 const Discord = require("discord.js");
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem();
-module.exports.run = async (client, message, args) => {
-  const user = message.options.getUser("user") || message.user;
+module.exports.run = async (client, interaction, args) => {
+  const user = interaction.options.getUser("user") || interaction.user;
   let result = await cs.getUserItems({
     user: user,
-    guild: message.guild,
+    guild: interaction.guild,
   });
   let inv = result.inventory.slice(0, 10);
   const embed = new Discord.EmbedBuilder().setDescription(
@@ -17,7 +17,7 @@ module.exports.run = async (client, message, args) => {
     embed.setDescription("Your Inventory!");
   }
   embed.addFields(arr);
-  return message.reply({
+  return interaction.reply({
     embeds: [embed],
   });
 };

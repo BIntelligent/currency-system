@@ -1,23 +1,23 @@
 const Discord = require('discord.js')
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem;
-module.exports.run = async (client, message, args) => {
-    await message.deferReply();
-    if (message.options.getInteger('price') < 1) return message.editReply("You can't add an item for less than 1$!");
+module.exports.run = async (client, interaction, args) => {
+    await interaction.deferReply();
+    if (interaction.options.getInteger('price') < 1) return interaction.editReply("You can't add an item for less than 1$!");
     let result = await cs.addItem({
-        guild: message.guild,
+        guild: interaction.guild,
         inventory: {
-            name: message.options.getString('name'),
-            price: message.options.getInteger('price'),
-            description: message.options.getString('description') || 'No Description'
+            name: interaction.options.getString('name'),
+            price: interaction.options.getInteger('price'),
+            description: interaction.options.getString('description') || 'No Description'
         }
     });
     if (result.error) {
-        if (result.type == 'No-Inventory-Name') return message.editReply('There was a error, Please enter item name to add.!')
-        if (result.type == 'Invalid-Inventory-Price') return message.editReply('There was a error, invalid price!')
-        if (result.type == 'No-Inventory-Price') return message.editReply('There was a error, You didnt specify price!')
-        if (result.type == 'No-Inventory') return message.editReply('There was a error, No data recieved!')
-    } else return message.editReply('Done! Successfully added `' + message.options.getString('name') + '` to the shop!')
+        if (result.type == 'No-Inventory-Name') return interaction.editReply('There was a error, Please enter item name to add.!')
+        if (result.type == 'Invalid-Inventory-Price') return interaction.editReply('There was a error, invalid price!')
+        if (result.type == 'No-Inventory-Price') return interaction.editReply('There was a error, You didnt specify price!')
+        if (result.type == 'No-Inventory') return interaction.editReply('There was a error, No data recieved!')
+    } else return interaction.editReply('Done! Successfully added `' + interaction.options.getString('name') + '` to the shop!')
 
 
 

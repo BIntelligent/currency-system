@@ -1,17 +1,17 @@
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem();
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, interaction, args) => {
   let result = await cs.daily({
-    user: message.user,
-    guild: message.guild,
+    user: interaction.user,
+    guild: interaction.guild,
     amount: 100,
   });
   if (result.error)
-    return message.reply(
+    return interaction.reply(
       `You have used daily recently Try again in ${result.time}`
     );
   else
-    message.reply(
+    interaction.reply(
       `You have earned $${result.amount}. Your streak is now ${result.rawData.streak.daily}`
     );
 };

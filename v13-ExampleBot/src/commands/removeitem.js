@@ -1,16 +1,16 @@
 const Discord = require('discord.js')
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem;
-module.exports.run = async (client, message, args) => {
-    if (!args[0].value) return message.reply('Which item to remove?')
+module.exports.run = async (client, interaction, args) => {
+    if (!args[0].value) return interaction.reply('Which item to remove?')
     let result = await cs.removeItem({
-        guild: message.guild,
+        guild: interaction.guild,
         item: parseInt(args[0].value)
     });
     if (result.error) {
-        if (result.type == 'Invalid-Item-Number') return message.reply('There was a error, Please enter item number to remove.!')
-        if (result.type == 'Unknown-Item') return message.reply('There was a error, The Item Does not exist!')
-    } else message.reply('Done! Successfully removed the `' + result.inventory.name + '` from shop!')
+        if (result.type == 'Invalid-Item-Number') return interaction.reply('There was a error, Please enter item number to remove.!')
+        if (result.type == 'Unknown-Item') return interaction.reply('There was a error, The Item Does not exist!')
+    } else interaction.reply('Done! Successfully removed the `' + result.inventory.name + '` from shop!')
 
 
 

@@ -1,8 +1,8 @@
 const {
-    MessageActionRow,
-    MessageButton,
-    MessageEmbed,
-    MessageAttachment
+    interactionActionRow,
+    interactionButton,
+    interactionEmbed,
+    interactionAttachment
 } = require('discord.js');
 module.exports.run = async (client, interaction, args) => {
     //const channel = interaction.options.getChannel('channel');
@@ -10,7 +10,7 @@ module.exports.run = async (client, interaction, args) => {
     // console.log(args)
     const channel = args[0].channel;
     const query = args[1].value;
-    const embed = new MessageEmbed()
+    const embed = new interactionEmbed()
         .setTitle('Suggestion')
         .setDescription(query)
         .setColor('RANDOM')

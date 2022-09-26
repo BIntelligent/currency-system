@@ -464,8 +464,8 @@ async function beg(settings) {
 // ===================================================================
 // This is for Rob Command
 function testChance(successPercentage) {
-  let random2 = Math.random() * 10;
-  return (random2 -= successPercentage) < 0;
+  let random = Math.random() * 10;
+  return (random -= successPercentage) < 0;
 }
 
 module.exports = {

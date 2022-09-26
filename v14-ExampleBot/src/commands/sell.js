@@ -1,29 +1,29 @@
 const Discord = require("discord.js");
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem();
-module.exports.run = async (client, message, args) => {
-  if (!args[0].value) return message.reply("Which item to remove?");
+module.exports.run = async (client, interaction, args) => {
+  if (!args[0].value) return interaction.reply("Which item to remove?");
   let amount = 1;
   if (args[1] && args[1].value) amount = args[1].value;
   let result = await cs.removeUserItem({
-    user: message.user,
-    guild: message.guild,
+    user: interaction.user,
+    guild: interaction.guild,
     item: parseInt(args[0].value),
     amount: amount,
   });
   if (result.error) {
     if (result.type == "Invalid-Item-Number")
-      return message.reply(
+      return interaction.reply(
         "There was a error, Please enter item number to remove.!"
       );
     if (result.type == "Unknown-Item")
-      return message.reply("There was a error, The Item Does not exist!");
+      return interaction.reply("There was a error, The Item Does not exist!");
     if (result.type == "Invalid-Amount")
-      return message.reply("Invalid Number of items to remove.");
+      return interaction.reply("Invalid Number of items to remove.");
     if (result.type == "Negative-Amount")
-      return message.reply("Can't Remove Less than 1 item. Smh!");
+      return interaction.reply("Can't Remove Less than 1 item. Smh!");
   } else
-    message.reply(
+    interaction.reply(
       `Done! Successfully sold \`${result.inventory.deleted}\` of \`${result.inventory.name}\` for free! You now have \`${result.inventory.count}\` of those items left!`
     );
 };

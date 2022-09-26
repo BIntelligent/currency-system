@@ -1,11 +1,11 @@
 const Discord = require('discord.js')
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem;
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, interaction, args) => {
     // Command Start's here
-    let result = await cs.info(message.user.id, message.guild.id);
-    const embed = new Discord.MessageEmbed()
-        .setDescription('Info about ' + message.user.tag);
+    let result = await cs.info(interaction.user.id, interaction.guild.id);
+    const embed = new Discord.interactionEmbed()
+        .setDescription('Info about ' + interaction.user.tag);
     let unUsed = '';
     let cantBeUsed = '';
     for (const [key, value] of result.info) {
@@ -14,7 +14,7 @@ module.exports.run = async (client, message, args) => {
     }
     embed.addField('Commands That you can use:', unUsed || 'None');
     embed.addField('Commands That you can\'t use:', cantBeUsed || 'None');
-    message.reply({
+    interaction.reply({
         embeds: [embed]
     })
     // Commands Stop's here.

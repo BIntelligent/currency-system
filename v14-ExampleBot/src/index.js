@@ -48,6 +48,9 @@ cs.searchForNewUpdate(true);
 process.on("unhandledRejection", (_) =>
   console.error(_.stack + "\n" + "=".repeat(20))
 );
+process.on("uncaughtException", (_) =>
+  console.error(_?.stack || _ + "\n" + "=".repeat(20))
+);
 
 for (const file of require("fs")
   .readdirSync("./src/commands")

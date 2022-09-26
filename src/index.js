@@ -10,6 +10,7 @@ const {
   getInventory,
   connect,
   event,
+  saveUser,
 } = require("./functions/global");
 /**
  * @class CurrencySystem
@@ -285,17 +286,150 @@ class CurrencySystem {
       rawData: data,
     };
   }
+  async transferItem(settings) {
+    if (!settings.guild)
+      settings.guild = {
+        id: null,
+      };
+
+    event.emit("debug", `[ CS => Debug ] : transferItem Function is Executed.`);
+    event.emit("debug", `[ CS => Debug ] : Fetching User ( Buy Function )`);
+    let user1 = await findUser(
+      { user: settings.user1, guild: settings.guild },
+      null,
+      null,
+      "transferItem"
+    );
+    let user2 = await findUser(
+      { user: settings.user2, guild: settings.guild },
+      null,
+      null,
+      "transferItem"
+    );
+    let name, amount_to_transfer, itemsLeft;
+    // item
+    let thing = parseInt(settings.item);
+    if (!thing)
+      return {
+        error: true,
+        type: "No-Item",
+      };
+    thing = thing - 1;
+    // check if item exists
+    if (!user1.inventory[thing]) return { error: true, type: "Invalid-Item" };
+    // Amount
+    amount_to_transfer = settings.amount;
+    if (amount_to_transfer === "all" || amount_to_transfer === "max") {
+      let user2_has_item = false;
+      let ifHasItem_then_index = 0;
+      for (let i = 0; i < user1.inventory.length; i++) {
+        if (user2.inventory[i].name === user1.inventory[thing].name) {
+          user2_has_item = true;
+          ifHasItem_then_index = i;
+        }
+      }
+      amount_to_transfer = user1.inventory[thing].amount;
+      name = user1.inventory[thing].name;
+      itemsLeft = 0;
+      if (user2_has_item === false)
+        user2.inventory.push(user1.inventory[thing]);
+      else
+        user2.inventory[ifHasItem_then_index].amount +=
+          user1.inventory[thing].amount;
+
+      user1.inventory.splice(thing, 1);
+    } else {
+      amount_to_transfer = parseInt(amount_to_transfer) || 1;
+      if (amount_to_transfer <= 0)
+        return { error: true, type: "Invalid-Amount" };
+      if (amount_to_transfer > user1.inventory[thing].amount)
+        return { error: true, type: "In-Sufficient-Amount" };
+      let user2_has_item = false;
+      let ifHasItem_then_index = 0;
+      for (let i = 0; i < user2.inventory.length; i++) {
+        if (user2.inventory[i].name === user1.inventory[thing].name) {
+          user2_has_item = true;
+          ifHasItem_then_index = i;
+        }
+      }
+      name = user1.inventory[thing].name;
+      if (user2_has_item === false)
+        user2.inventory.push({
+          name: user1.inventory[thing].name,
+          amount: amount_to_transfer,
+        });
+      else user2.inventory[ifHasItem_then_index].amount += amount_to_transfer;
+      user1.inventory[thing].amount -= amount_to_transfer;
+      itemsLeft = user1.inventory[thing].amount;
+    }
+    // console.log(`user1: `);
+    // console.log(user1.inventory[0]);
+    // console.log(`user2: `);
+    // console.log(user2.inventory[0]);
+    await require("./models/currency").updateOne(
+      { user: settings.user1.id, guild: settings.guild.id },
+      { $set: { inventory: user1.inventory } },
+      (error, { n, nModified, ok }) => {
+        // console.log(nModified);
+      }
+    );
+    await require("./models/currency").updateOne(
+      { user: settings.user2.id, guild: settings.guild.id },
+      { $set: { inventory: user2.inventory } },
+      (error, { n, nModified, ok }) => {
+        // console.log("From 2: " + nModified);
+      }
+    );
+    /*     require("mongodb").MongoClient.connect(
+      _getDbURL(),
+      { useUnifiedTopology: true },
+      function (err, db) {
+        if (err) throw err;
+        let dbo = db.db(_getDbURL().split("/").reverse()[0] || "test");
+        dbo
+          .collection("currencies")
+          .updateOne(
+            { user: settings.user1.id, guild: settings.guild.id },
+            { $set: { inventory: user1.inventory } },
+            { upsert: true },
+            function (err, res) {
+              if (err) throw err;
+              console.log(res);
+            }
+          );
+        dbo
+          .collection("currencies")
+          .updateOne(
+            { user: settings.user2.id, guild: settings.guild.id },
+            { $set: { inventory: user2.inventory } },
+            { upsert: true },
+            function (err, res) {
+              if (err) throw err;
+              console.log(res);
+              db.close();
+            }
+          );
+      }
+    ); */
+    return {
+      error: false,
+      type: "success",
+      transfered: amount_to_transfer,
+      itemName: name,
+      itemsLeft: itemsLeft,
+    };
+  }
 }
 
 Object.assign(CurrencySystem.prototype, require("./functions/global"));
 module.exports = CurrencySystem;
 
-// function _getDbURL() {
-//   let url = process.mongoURL;
-//   if (require("mongoose").connections.length)
-//     url = require("mongoose").connections[0]._connectionString;
-//   return url;
-// }
+function _getDbURL() {
+  let url = process.mongoURL;
+  if (require("mongoose").connections.length)
+    url = require("mongoose").connections[0]._connectionString;
+  return url;
+}
 module.exports.cs = event;
 
 async function _buy(settings) {
@@ -310,6 +444,7 @@ async function _buy(settings) {
     settings.guild = {
       id: null,
     };
+  let amount_to_add = parseInt(settings.amount) || 1;
   let thing = parseInt(settings.item);
   if (!thing)
     return {
@@ -322,13 +457,17 @@ async function _buy(settings) {
       error: true,
       type: "Invalid-Item",
     };
+  let price = inventoryData.inventory[thing].price;
+  if (amount_to_add > 1)
+    price = amount_to_add * inventoryData.inventory[thing].price;
 
-  if (data.wallet < inventoryData.inventory[thing].price)
+  if (data.wallet < price)
     return {
       error: true,
       type: "low-money",
     };
-  data.wallet -= inventoryData.inventory[thing].price;
+  if (amount_to_add <= 0) return { error: true, type: "Invalid-Amount" };
+  data.wallet -= price;
   let done = false;
   let makeItem = true;
 
@@ -340,7 +479,7 @@ async function _buy(settings) {
   if (makeItem == false) {
     for (let j in data.inventory) {
       if (inventoryData.inventory[thing].name === data.inventory[j].name) {
-        data.inventory[j].amount++;
+        data.inventory[j].amount += amount_to_add || 1;
         done = true;
       }
     }
@@ -349,7 +488,7 @@ async function _buy(settings) {
   if (done == false) {
     data.inventory.push({
       name: inventoryData.inventory[thing].name,
-      amount: 1,
+      amount: amount_to_add || 1,
     });
   }
   require("./models/currency").findOneAndUpdate(
@@ -376,5 +515,7 @@ async function _buy(settings) {
     error: false,
     type: "success",
     inventory: inventoryData.inventory[thing],
+    price: price,
+    amount: amount_to_add,
   };
 }

@@ -1,8 +1,8 @@
 const {
-    MessageActionRow,
-    MessageButton,
+    interactionActionRow,
+    interactionButton,
     EmbedBuilder,
-    MessageAttachment
+    interactionAttachment
 } = require('discord.js');
 module.exports.run = async (client, interaction, args) => {
     //const channel = interaction.options.getChannel('channel');

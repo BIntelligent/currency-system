@@ -1,17 +1,17 @@
 const Discord = require('discord.js')
 const CurrencySystem = require("currency-system");
 const cs = new CurrencySystem;
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, interaction, args) => {
     let result = await cs.getShopItems({
-        guild: message.guild
+        guild: interaction.guild
     });
     let inv = result.inventory;
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.interactionEmbed()
         .setDescription('Shop!')
     for (let key in inv) {
         embed.addField(`${parseInt(key) + 1} - **${inv[key].name}:** for $${inv[key].price}`, 'Description: ' + inv[key].description)
     }
-    message.reply({
+    interaction.reply({
         embeds: [embed]
     });
 }
