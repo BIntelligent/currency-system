@@ -194,7 +194,7 @@ class CurrencySystem {
       let data_to_save = {
         count: 0,
         name: data.inventory[i].name,
-        deleted_amount: data.inventory[i].amount
+        deleted: data.inventory[i].amount
       }
       data_user = data_to_save;
 
@@ -211,7 +211,7 @@ class CurrencySystem {
             let data_to_save = {
               count: data.inventory[i].amount,
               name: data.inventory[i].name,
-              deleted_amount: 1
+              deleted: 1
             }
 
             data_user = data_to_save; 
@@ -221,7 +221,7 @@ class CurrencySystem {
             let data_to_save = {
               count: 0,
               name: data.inventory[i].name,
-              deleted_amount: 1
+              deleted: 1
             }
 
             data_user = data_to_save;
@@ -237,7 +237,7 @@ class CurrencySystem {
           } else if (String(settings.amount).includes("-")) {
             done = false;
             data_error.type = "negative-amount"
-            
+
           } else {
             data.inventory[i].amount -= settings.amount;
 
