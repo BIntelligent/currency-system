@@ -26,7 +26,8 @@ module.exports.run = async (client, message, args) => {
         let r2 = await cs.removeUserItem({
             user: message.user,
             guild: message.guild,
-            item: i + 1
+            item: i + 1,
+            amount: 1
         });
         if (result.error || r2.error) {
             console.log(result);

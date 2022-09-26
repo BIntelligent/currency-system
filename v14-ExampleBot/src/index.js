@@ -61,6 +61,10 @@ client.on("ready", () => {
     Array.from(client.commands.values()).map((a) => a.help.data)
   );
   console.log(`${client.user.tag} is ready!`);
+  client.user.setPresence({
+    activities: [{ name: `Be Intelligent Code me`, type: 3 }],
+    status: "dnd",
+  });
 });
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
