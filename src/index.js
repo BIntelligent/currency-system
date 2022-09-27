@@ -362,55 +362,9 @@ class CurrencySystem {
       user1.inventory[thing].amount -= amount_to_transfer;
       itemsLeft = user1.inventory[thing].amount;
     }
-    // console.log(`user1: `);
-    // console.log(user1.inventory[0]);
-    // console.log(`user2: `);
-    // console.log(user2.inventory[0]);
-    await require("./models/currency").updateOne(
-      { user: settings.user1.id, guild: settings.guild.id },
-      { $set: { inventory: user1.inventory } },
-      (error, { n, nModified, ok }) => {
-        // console.log(nModified);
-      }
-    );
-    await require("./models/currency").updateOne(
-      { user: settings.user2.id, guild: settings.guild.id },
-      { $set: { inventory: user2.inventory } },
-      (error, { n, nModified, ok }) => {
-        // console.log("From 2: " + nModified);
-      }
-    );
-    /*     require("mongodb").MongoClient.connect(
-      _getDbURL(),
-      { useUnifiedTopology: true },
-      function (err, db) {
-        if (err) throw err;
-        let dbo = db.db(_getDbURL().split("/").reverse()[0] || "test");
-        dbo
-          .collection("currencies")
-          .updateOne(
-            { user: settings.user1.id, guild: settings.guild.id },
-            { $set: { inventory: user1.inventory } },
-            { upsert: true },
-            function (err, res) {
-              if (err) throw err;
-              console.log(res);
-            }
-          );
-        dbo
-          .collection("currencies")
-          .updateOne(
-            { user: settings.user2.id, guild: settings.guild.id },
-            { $set: { inventory: user2.inventory } },
-            { upsert: true },
-            function (err, res) {
-              if (err) throw err;
-              console.log(res);
-              db.close();
-            }
-          );
-      }
-    ); */
+    user1.markModified("inventory");
+    user2.markModified("inventory");
+    await saveUser(user1, user2);
     return {
       error: false,
       type: "success",

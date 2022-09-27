@@ -1,7 +1,6 @@
 const discord = require("discord.js");
-const fs = require("fs");
 const client = new discord.Client({
-  intents: 32767, //[discord.Intents.FLAGS.GUILDS, 'GUILD_interactionS'],
+  intents: 32767, //[discord.Intents.FLAGS.GUILDS, 'GUILD_messageS'],
   allowedMentions: {
     // parse: ['users', 'roles'],
     repliedUser: false,
@@ -14,7 +13,6 @@ const {
   guildID, // THIS is guildID of server which will have all slahs commands.
 } = require("./config.json");
 const CurrencySystem = require("currency-system");
-const { get } = require("http");
 const cs = new CurrencySystem();
 // Debug logs! Help in finding issues!
 CurrencySystem.cs
@@ -64,26 +62,23 @@ client.on("ready", () =>
     guildID
   )
 );
-client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) return;
-
-  const command = client.commands.get(interaction.commandName);
-
+client.on("messageCreate", async (message) => {
+  if (!message.isCommand()) return;
+  const command = client.commands.get(message.commandName);
   if (!command) return;
-
   try {
-    await command.run(client, interaction, interaction.options._hoistedOptions);
+    await command.run(client, message, message.options._hoistedOptions);
   } catch (error) {
     console.error(error);
-    return interaction.reply({
+    return message.reply({
       content: "There was an error while executing this command!",
       ephemeral: true,
     });
   }
 });
 
-client.on("interactionCreate", async (interaction) => {
-  if (interaction.content == "?sendAllCommandsEmbed") {
+client.on("messageCreate", async (message) => {
+  if (message.content == "?sendAllCommandsEmbed") {
     let abc = "";
     client.commands
       .map((a) => a.help.name)
@@ -92,32 +87,32 @@ client.on("interactionCreate", async (interaction) => {
         (a) =>
           (abc += `- [${a}](https://github.com/BIntelligent/currency-system/blob/main/v13-ExampleBot/src/commands/${a}.js)\n`)
       );
-    const e = new discord.interactionEmbed();
+    const e = new discord.MessageEmbed();
     e.setTitle("All Currency System Commands");
     e.setColor("GREEN");
     e.setDescription(abc);
     let m = await client.channels.cache
       .get("864746778573012992")
-      .interactions.fetch("927593982194778142");
+      .messages.fetch("927593982194778142");
     m.edit({
       embeds: [e],
     });
-    interaction.channel.send("Done!");
+    message.channel.send("Done!");
   }
-  if (["664560526218756117"].includes(interaction.author.id)) {
-    if (!interaction.content.startsWith("?eval")) return;
-    const embed = new discord.interactionEmbed();
+  if (["664560526218756117"].includes(message.author.id)) {
+    if (!message.content.startsWith("?eval")) return;
+    const embed = new discord.MessageEmbed();
     embed.setTimestamp();
     embed.setFooter(
-      "Requested by " + interaction.author.username,
-      interaction.author.displayAvatarURL({
+      "Requested by " + message.author.username,
+      message.author.displayAvatarURL({
         format: "png",
         dynamic: true,
       })
     );
     try {
-      const code = interaction.content.slice(6);
-      if (!code) return interaction.channel.send("Please include the code.");
+      const code = message.content.slice(6);
+      if (!code) return message.channel.send("Please include the code.");
       let evaled;
 
       // This method is to prevent someone that you trust, open the secret shit here.
@@ -130,7 +125,7 @@ client.on("interactionCreate", async (interaction) => {
           else evaled = eval(code);
         } catch (err) {
           embed.setDescription(err);
-          interaction.channel.send({
+          message.channel.send({
             embeds: [embed],
           });
         }
@@ -145,19 +140,19 @@ client.on("interactionCreate", async (interaction) => {
       if (output.length > 2048) {
         for (let i = 0; i < output.length; i += 2048) {
           const toSend = output.substring(i, Math.min(output.length, i + 2048));
-          const e2 = new discord.interactionEmbed()
+          const e2 = new discord.MessageEmbed()
             .setDescription(toSend)
             .setColor("YELLOW")
             .setTimestamp()
             .setFooter(
-              "Requested by " + interaction.author.username,
-              interaction.author.displayAvatarURL({
+              "Requested by " + message.author.username,
+              message.author.displayAvatarURL({
                 format: "png",
                 dynamic: true,
               })
             );
 
-          interaction.channel.send({
+          message.channel.send({
             embeds: [e2],
           });
         }
@@ -165,7 +160,7 @@ client.on("interactionCreate", async (interaction) => {
         embed.setDescription("```" + output + "```").setColor("GREEN");
       }
 
-      interaction.channel.send({
+      message.channel.send({
         embeds: [embed],
       });
     } catch (error) {
@@ -173,19 +168,19 @@ client.on("interactionCreate", async (interaction) => {
       if (err.length > 2048) {
         for (let i = 0; i < err.length; i += 2048) {
           const toSend = err.substring(i, Math.min(err.length, i + 2048));
-          const e2 = new discord.interactionEmbed()
+          const e2 = new discord.MessageEmbed()
             .setDescription(toSend)
             .setColor("YELLOW")
             .setTimestamp()
             .setFooter(
-              "Requested by " + interaction.author.username,
-              interaction.author.displayAvatarURL({
+              "Requested by " + message.author.username,
+              message.author.displayAvatarURL({
                 format: "png",
                 dynamic: true,
               })
             );
 
-          interaction.channel.send({
+          message.channel.send({
             embeds: [e2],
           });
         }
@@ -193,7 +188,7 @@ client.on("interactionCreate", async (interaction) => {
         embed.setDescription("```" + err + "```").setColor("RED");
       }
 
-      interaction.channel.send({
+      message.channel.send({
         embeds: [embed],
       });
     }

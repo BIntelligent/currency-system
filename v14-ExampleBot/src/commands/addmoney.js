@@ -4,7 +4,7 @@ module.exports.run = async (client, interaction, args) => {
   let user = args[2]?.member || interaction.member;
   if (!interaction.member.permissions.has("ADMINISTRATOR"))
     return interaction.reply("You do not have requied permissions.");
-  let wheretoPutMoney = args.get("from");
+  let wheretoPutMoney = args.get("to");
   let amount = args.get("amount");
   let money = parseInt(amount);
   let result = await cs.addMoney({
@@ -33,9 +33,9 @@ module.exports.help = {
         required: true,
       },
       {
-        name: "from",
+        name: "to",
         type: 3,
-        description: "Where to remove money from?",
+        description: "Where to add money to?",
         required: true,
         choices: [
           {

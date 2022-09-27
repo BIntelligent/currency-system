@@ -91,3 +91,39 @@ Object.defineProperty(Array.prototype, "get", {
     else return null;
   },
 });
+client.on("messageCreate", async (message) => {
+  if (message.content == "?sendAllCommandsEmbed") {
+    let abc = "",
+      def = "";
+
+    client.commands
+      .map((a) => a.help.name)
+      .sort((a, b) => a.localeCompare(b))
+      .forEach((a, i) => {
+        if (Math.floor(client.commands.size / 2) < i + 1)
+          def += `${
+            i + 1
+          }. - [${a}](https://github.com/BIntelligent/currency-system/blob/main/v14-ExampleBot/src/commands/${a}.js)\n`;
+        else
+          abc += `${
+            i + 1
+          }. - [${a}](https://github.com/BIntelligent/currency-system/blob/main/v14-ExampleBot/src/commands/${a}.js)\n`;
+      }, 0);
+
+    const e = new discord.EmbedBuilder()
+      .setTitle("All Currency System Commands (1/2)")
+      .setColor("Green")
+      .setDescription(abc);
+    const e2 = new discord.EmbedBuilder()
+      .setTitle("All Currency System Commands (2/2)")
+      .setColor("Green")
+      .setDescription(def);
+    let m = await client.channels.cache
+      .get("864746778573012992")
+      .messages.fetch("927593982194778142");
+    m.edit({
+      embeds: [e, e2],
+    });
+    message.channel.send("Done!");
+  }
+});
