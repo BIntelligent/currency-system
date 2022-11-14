@@ -31,6 +31,18 @@ export default class CurrencySystem {
     transferItem(settings: TransferItemOptions): any;
     monthly(settings: MainOptions): MainData;
     daily(settings: MainOptions): MainData;
+    yearly(settings: MainOptions): MainData;
+    weekly(settings: MainOptions): MainData;
+    quaterly(settings: MainOptions): MainData;
+    hafly(settings: MainOptions): MainData;
+    hourly(settings: MainOptions): MainData;
+    beg(settings: BegOptions): Promise<{
+        error: boolean;
+        type: string;
+        time: string | undefined;
+        amount?: number | undefined;
+    }>;
+    rob(settings: RobOptions): Promise<any>;
 }
 
 export interface BuyOptions extends _Base {
@@ -79,6 +91,20 @@ export type MainData = Promise<{
     amount?: undefined | any;
     rawData?: undefined | any;
 }>;
+
+export interface BegOptions extends _Base {
+    cooldown: string | number;
+    minAmount: number;
+    maxAmount: number;
+}
+
+export interface RobOptions extends _Base {
+    user2: string;
+    cooldown: number;
+    minAmount: number;
+    maxRob: number;
+    successPercentage: number;
+}
 type BuyData = Promise<{
     error: boolean;
     type: string;
