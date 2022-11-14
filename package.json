@@ -3,6 +3,7 @@
   "version": "2.8.3",
   "description": "An easy to use Currency System using Mongo DB.",
   "main": "src/index.js",
+  "types": "./types/index.d.ts",
   "scripts": {
     "doc": "jsdoc -c jsdoc.json",
     "start": "cd ./v14-ExampleBot && npm test"
