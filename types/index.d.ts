@@ -1,4 +1,4 @@
-export class CurrencySystem {
+export default class CurrencySystem {
     setMongoURL(password: string, toLog?: boolean): void;
     buy(settings: BuyOptions): BuyData;
     addUserItem(settings: BuyOptions): BuyData;
@@ -72,7 +72,7 @@ export interface MainOptions extends _Base {
     amount: number;
 }
 
-export type MainData = romise<{
+export type MainData = Promise<{
     error: boolean;
     type: string;
     time: string | undefined;
