@@ -29,18 +29,17 @@ export class CurrencySystem {
         type: string;
     }>;
     transferItem(settings: TransferItemOptions): any;
+    monthly(settings: MainOptions): MainData;
+    daily(settings: MainOptions): MainData;
 }
 
-export interface BuyOptions {
-    guild?: string;
-    user: string;
+export interface BuyOptions extends _Base {
     amount?: string | number;
     item: string | number;
 }
 
 export interface AddItemOptions {
-    guild?: string;
-    user: string;
+    guild: string;
     inventory: {
         name: string;
         price: string;
@@ -49,8 +48,7 @@ export interface AddItemOptions {
 }
 
 export interface RemoveItemOptions {
-    guild?: string;
-    user: string;
+    guild: string;
     item: string | number;
 }
 
@@ -66,13 +64,21 @@ export interface TransferItemOptions {
     item: string | number;
     amount: string;
 }
-export interface RemoveUserItemOptions {
-    guild?: string;
-    user: string;
+export interface RemoveUserItemOptions extends _Base {
     item: string | number;
     amount: number | "all";
 }
+export interface MainOptions extends _Base {
+    amount: number;
+}
 
+export type MainData = romise<{
+    error: boolean;
+    type: string;
+    time: string | undefined;
+    amount?: undefined | any;
+    rawData?: undefined | any;
+}>;
 type BuyData = Promise<{
     error: boolean;
     type: string;
@@ -80,3 +86,8 @@ type BuyData = Promise<{
     price?: undefined;
     amount?: undefined;
 }>;
+
+export interface _Base {
+    guild?: string;
+    user: string;
+}
