@@ -28,7 +28,7 @@ export class CurrencySystem {
         error: boolean;
         type: string;
     }>;
-    transferItem(settings: transferItem): any;
+    transferItem(settings: TransferItemOptions): any;
 }
 
 export interface BuyOptions {
