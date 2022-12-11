@@ -60,6 +60,7 @@ class CurrencySystem {
       name: String(settings.inventory.name) || "Air",
       price: parseInt(settings.inventory.price) || 0,
       description: String(settings.inventory.description) || "No Description",
+      itemId: makeid(),
     };
     if (typeof settings.guild === "string")
       settings.guild = {
@@ -165,7 +166,7 @@ class CurrencySystem {
   }
   async removeUserItem(settings) {
     let data = await findUser(settings, null, null, "removeUserItem");
-
+    let item = null;
     let thing = parseInt(settings.item);
     if (!thing)
       return {
@@ -201,7 +202,7 @@ class CurrencySystem {
         deleted: data.inventory[i].amount,
       };
       data_user = data_to_save;
-
+      item = data.inventory[i];
       data.inventory.splice(i, 1);
       done = true;
     } else {
@@ -209,6 +210,7 @@ class CurrencySystem {
         if (data.inventory[i] === data.inventory[thing]) {
           // If in inventory the number of item is greater to 1 and no amount specified
           if (data.inventory[i].amount > 1 && !settings?.amount) {
+            item = data.inventory[i];
             data.inventory[i].amount--;
 
             let data_to_save = {
@@ -228,7 +230,7 @@ class CurrencySystem {
             };
 
             data_user = data_to_save;
-
+            item = data.inventory[i];
             data.inventory.splice(i, 1);
             done = true;
             // If number specified
@@ -244,6 +246,7 @@ class CurrencySystem {
               done = false;
               data_error.type = "Invalid-Amount";
             } else {
+              item = data.inventory[i];
               data.inventory[i].amount -= settings.amount;
 
               let data_to_save = {
@@ -284,6 +287,7 @@ class CurrencySystem {
       error: false,
       inventory: data_user,
       rawData: data,
+      item: item
     };
   }
   async transferItem(settings) {
@@ -472,4 +476,11 @@ async function _buy(settings) {
     price: price,
     amount: amount_to_add,
   };
+}
+function makeid(length = 5) {
+  let result = '';
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < length; i++)
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  return result;
 }
