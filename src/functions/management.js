@@ -55,7 +55,7 @@ async function findUser(settings, uid, gid, by) {
         .map((w) => w[0].toUpperCase() + w.substr(1).toLowerCase())
         .join(" ")
     );
-  } catch (e) {}
+  } catch (e) { }
   return find;
 }
 // ===================================================================
@@ -118,20 +118,20 @@ async function saveUser(data, data2) {
       data.save((_) =>
         _
           ? console.error(
-              `ERROR Occured while saving data (Currency-system) \n${"=".repeat(
-                50
-              )}\n${_ + "\n" + "=".repeat(50)}`
-            )
+            `ERROR Occured while saving data (Currency-system) \n${"=".repeat(
+              50
+            )}\n${_ + "\n" + "=".repeat(50)}`
+          )
           : "No Error"
       );
       if (data2)
         data2.save((_) =>
           _
             ? console.error(
-                `ERROR Occured while saving data (Currency-system) \n${"=".repeat(
-                  50
-                )}\n${_ + "\n" + "=".repeat(50)}`
-              )
+              `ERROR Occured while saving data (Currency-system) \n${"=".repeat(
+                50
+              )}\n${_ + "\n" + "=".repeat(50)}`
+            )
             : "No Error"
         );
     },
@@ -172,7 +172,7 @@ function amount(data, type = "add", where = "wallet", amount, by) {
         .map((w) => w[0].toUpperCase() + w.substr(1).toLowerCase())
         .join(" ")
     );
-  } catch (E) {}
+  } catch (E) { }
   return data;
 }
 // ===================================================================
@@ -185,7 +185,6 @@ async function setBankSpace(userID, guildID, newAmount) {
       .toString()
       .substring(15, arguments.callee.toString().indexOf("("))
   );
-  const oldData = data;
   newAmount = parseInt(newAmount);
   if (!newAmount && newAmount !== 0)
     return {
@@ -193,8 +192,8 @@ async function setBankSpace(userID, guildID, newAmount) {
       type: "no-amount-provided",
       rawData: data,
     };
+  let oldData = Object.assign({}, data);
   data.bankSpace = newAmount;
-
   await saveUser(data);
   event.emit("userUpdate", oldData, data);
   if (oldData.bankSpace !== data.bankSpace)
