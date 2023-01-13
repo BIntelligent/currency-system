@@ -1,6 +1,4 @@
-v*-ExampleBot
-v13-ExampleBot
-v14-ExampleBot
+*-ExampleBot
 package-lock.json
 .github
 node_modules
