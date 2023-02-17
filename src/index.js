@@ -200,6 +200,7 @@ class CurrencySystem {
         count: 0,
         name: data.inventory[i].name,
         deleted: data.inventory[i].amount,
+        itemId: data.inventory[i].itemId,
       };
       data_user = data_to_save;
       item = data.inventory[i];
@@ -217,6 +218,7 @@ class CurrencySystem {
               count: data.inventory[i].amount,
               name: data.inventory[i].name,
               deleted: 1,
+              itemId: data.inventory[i].itemId,
             };
 
             data_user = data_to_save;
@@ -227,6 +229,7 @@ class CurrencySystem {
               count: 0,
               name: data.inventory[i].name,
               deleted: 1,
+              itemId: data.inventory[i].itemId,
             };
 
             data_user = data_to_save;
@@ -253,6 +256,7 @@ class CurrencySystem {
                 count: data.inventory[i].amount,
                 name: data.inventory[i].name,
                 deleted: settings.amount,
+                itemId: data.inventory[i].itemId,
               };
 
               data_user = data_to_save;
@@ -287,7 +291,7 @@ class CurrencySystem {
       error: false,
       inventory: data_user,
       rawData: data,
-      item: item
+      item: item,
     };
   }
   async transferItem(settings) {
@@ -478,8 +482,9 @@ async function _buy(settings) {
   };
 }
 function makeid(length = 5) {
-  let result = '';
-  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = "";
+  let characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for (let i = 0; i < length; i++)
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   return result;
