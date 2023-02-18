@@ -195,7 +195,6 @@ class CurrencySystem {
         data.inventory.findIndex(
           (i) => i === data.inventory.filter((inv) => inv.name === thing)
         ) + 1;
-
       let data_to_save = {
         count: 0,
         name: data.inventory[i].name,
@@ -431,19 +430,11 @@ async function _buy(settings) {
   if (amount_to_add <= 0) return { error: true, type: "Invalid-Amount" };
   data.wallet -= price;
   let done = false;
-  let makeItem = true;
-
   for (let j in data.inventory) {
-    if (inventoryData.inventory[thing].name === data.inventory[j].name)
-      makeItem = false;
-  }
-
-  if (makeItem == false) {
-    for (let j in data.inventory) {
-      if (inventoryData.inventory[thing].name === data.inventory[j].name) {
-        data.inventory[j].amount += amount_to_add || 1;
-        done = true;
-      }
+    if (inventoryData.inventory[thing].name === data.inventory[j].name) {
+      data.inventory[j].amount += amount_to_add || 1;
+      if (!data.inventory[j].itemId) data.inventory[j].itemId = makeid();
+      done = true;
     }
   }
 
@@ -451,6 +442,7 @@ async function _buy(settings) {
     data.inventory.push({
       name: inventoryData.inventory[thing].name,
       amount: amount_to_add || 1,
+      itemId: makeid(),
     });
   }
   require("./models/currency").findOneAndUpdate(
