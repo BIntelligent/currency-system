@@ -433,16 +433,18 @@ async function _buy(settings) {
   for (let j in data.inventory) {
     if (inventoryData.inventory[thing].name === data.inventory[j].name) {
       data.inventory[j].amount += amount_to_add || 1;
-      if (!data.inventory[j].itemId) data.inventory[j].itemId = makeid();
+      if (!data.inventory[j].itemId)
+        data.inventory[j].itemId =
+          inventoryData.inventory[thing].itemId || makeid();
+
       done = true;
     }
   }
-
   if (done == false) {
     data.inventory.push({
       name: inventoryData.inventory[thing].name,
       amount: amount_to_add || 1,
-      itemId: makeid(),
+      itemId: inventoryData.inventory[thing].itemId || makeid(),
     });
   }
   require("./models/currency").findOneAndUpdate(
